@@ -11,17 +11,17 @@ Things added temporarily for development that **must be removed before public la
 
 ## Stack Decision
 
-| Layer | Choice | Reason |
-|---|---|---|
-| Framework | Next.js 14 (App Router) | Full-stack, API routes, Vercel-native |
-| UI | shadcn/ui + Tailwind CSS | Accessible, composable, unstyled base |
-| Database (app) | Supabase (Postgres) | Schedules, connections, job logs, auth |
-| File Storage | Supabase Storage | Large Excel fallback, signed URLs |
-| Email | Resend | Simple API, great DX, free tier |
-| Scheduling | Vercel Cron Jobs | Native cron support, zero infra |
-| Encryption | AES-256-GCM (Node crypto) | Encrypt DB credentials at rest |
-| Excel | ExcelJS | Streaming row-by-row generation |
-| Hosting | Vercel | Zero-config, pairs with Next.js |
+| Layer          | Choice                    | Reason                                 |
+| -------------- | ------------------------- | -------------------------------------- |
+| Framework      | Next.js 14 (App Router)   | Full-stack, API routes, Vercel-native  |
+| UI             | shadcn/ui + Tailwind CSS  | Accessible, composable, unstyled base  |
+| Database (app) | Supabase (Postgres)       | Schedules, connections, job logs, auth |
+| File Storage   | Supabase Storage          | Large Excel fallback, signed URLs      |
+| Email          | Resend                    | Simple API, great DX, free tier        |
+| Scheduling     | Vercel Cron Jobs          | Native cron support, zero infra        |
+| Encryption     | AES-256-GCM (Node crypto) | Encrypt DB credentials at rest         |
+| Excel          | ExcelJS                   | Streaming row-by-row generation        |
+| Hosting        | Vercel                    | Zero-config, pairs with Next.js        |
 
 ---
 
@@ -56,51 +56,55 @@ External DBs
 ## Database Schema (Supabase)
 
 ### `connections`
-| Column | Type | Notes |
-|---|---|---|
-| id | uuid PK | |
-| user_id | uuid FK | Supabase auth |
-| name | text | Display name |
-| db_type | enum | `postgres` \| `mysql` |
-| host | text | |
-| port | int | |
-| database_name | text | |
-| username_enc | text | AES-256 encrypted |
-| password_enc | text | AES-256 encrypted |
-| created_at | timestamptz | |
+
+| Column        | Type        | Notes                 |
+| ------------- | ----------- | --------------------- |
+| id            | uuid PK     |                       |
+| user_id       | uuid FK     | Supabase auth         |
+| name          | text        | Display name          |
+| db_type       | enum        | `postgres` \| `mysql` |
+| host          | text        |                       |
+| port          | int         |                       |
+| database_name | text        |                       |
+| username_enc  | text        | AES-256 encrypted     |
+| password_enc  | text        | AES-256 encrypted     |
+| created_at    | timestamptz |                       |
 
 ### `query_jobs`
-| Column | Type | Notes |
-|---|---|---|
-| id | uuid PK | |
-| user_id | uuid FK | |
-| connection_id | uuid FK | |
-| name | text | Job display name |
-| sql_query | text | Raw SQL (read-only enforced) |
-| cron_expression | text | e.g. `0 8 * * 1` |
-| recipients | text[] | Email list |
-| is_active | bool | Enable/disable |
-| last_run_at | timestamptz | |
-| next_run_at | timestamptz | Computed on save |
-| created_at | timestamptz | |
+
+| Column          | Type        | Notes                        |
+| --------------- | ----------- | ---------------------------- |
+| id              | uuid PK     |                              |
+| user_id         | uuid FK     |                              |
+| connection_id   | uuid FK     |                              |
+| name            | text        | Job display name             |
+| sql_query       | text        | Raw SQL (read-only enforced) |
+| cron_expression | text        | e.g. `0 8 * * 1`             |
+| recipients      | text[]      | Email list                   |
+| is_active       | bool        | Enable/disable               |
+| last_run_at     | timestamptz |                              |
+| next_run_at     | timestamptz | Computed on save             |
+| created_at      | timestamptz |                              |
 
 ### `job_logs`
-| Column | Type | Notes |
-|---|---|---|
-| id | uuid PK | |
-| job_id | uuid FK | |
-| status | enum | `success` \| `failed` \| `running` |
-| rows_returned | int | |
-| file_size_bytes | int | |
-| delivery_method | enum | `attachment` \| `link` |
-| error_message | text | null on success |
-| executed_at | timestamptz | |
+
+| Column          | Type        | Notes                              |
+| --------------- | ----------- | ---------------------------------- |
+| id              | uuid PK     |                                    |
+| job_id          | uuid FK     |                                    |
+| status          | enum        | `success` \| `failed` \| `running` |
+| rows_returned   | int         |                                    |
+| file_size_bytes | int         |                                    |
+| delivery_method | enum        | `attachment` \| `link`             |
+| error_message   | text        | null on success                    |
+| executed_at     | timestamptz |                                    |
 
 ---
 
 ## Phase Plan
 
 ### ~~Phase 0 — Project Setup~~ ✅ Done
+
 - [x] Init Next.js 14 app with TypeScript, Tailwind, shadcn/ui
 - [x] Configure Supabase project: create tables, enable Row Level Security (`supabase/migrations/`)
 - [x] Set up Supabase Auth (magic link — configured in middleware)
@@ -116,7 +120,7 @@ External DBs
 
 ### ~~Phase 1 — Landing Page~~ ✅ Done
 
-**Goal:** Sell the *pain*, not the product. Dark, dramatic, premium.
+**Goal:** Sell the _pain_, not the product. Dark, dramatic, premium.
 
 - [x] `components/landing/navbar.tsx` — fixed top nav with smooth scroll links
 - [x] `components/landing/hero.tsx` — grid bg, radial glow, headline, email capture
@@ -185,11 +189,13 @@ External DBs
 **This is the core of the product. Must be streaming, not in-memory.**
 
 **`/api/cron` handler (called by Vercel Cron every minute):**
+
 1. Query Supabase for all jobs where `is_active = true AND next_run_at <= NOW()`
 2. For each due job: mark `status = running`, update `last_run_at`, compute next `next_run_at`
 3. Spawn execution (sequential or parallel depending on load)
 
 **Execution worker (`lib/executor.ts`):**
+
 1. Decrypt DB credentials
 2. Open connection (pg / mysql2 client)
 3. Execute query as **streaming cursor** (avoid loading all rows into memory)
@@ -202,6 +208,7 @@ External DBs
 8. Write to `job_logs`
 
 **Key implementation details:**
+
 - Use `pg` with `query.stream()` or `cursor` library for streaming rows
 - Use `mysql2` with `queryStream()` for MySQL
 - ExcelJS `stream.xlsx.WorkbookWriter` writes row-by-row without buffering full file
@@ -214,6 +221,7 @@ External DBs
 **Resend integration (`lib/mailer.ts`):**
 
 **Case A — Small file (< 20MB):**
+
 ```
 Subject: [Query2Mail] {Job Name} — {Date}
 Body: "Please find your scheduled report attached."
@@ -221,6 +229,7 @@ Attachment: {job_name}_{date}.xlsx
 ```
 
 **Case B — Large file (>= 20MB):**
+
 ```
 Subject: [Query2Mail] {Job Name} — {Date} (Download Link)
 Body: "Your report is ready. Due to its size, download it here:
@@ -244,15 +253,17 @@ Body: "Your report is ready. Due to its size, download it here:
 
 ---
 
-### Phase 8 — Logs & Dashboard Polish (Day 8–9)
+### Phase 8 — Logs & Dashboard Polish (Day 8–9) ✅ Done
 
 **Logs page:**
+
 - Table of recent job executions (shadcn `Table`)
 - Columns: Job Name, Status (badge), Rows, File Size, Delivery Method, Time
 - Expandable row for error messages
 - Filter by job, status, date range
 
 **Dashboard home:**
+
 - Summary cards: Active Jobs, Emails Sent (last 30d), Last Run Status
 - Quick-run button on each job card
 

@@ -1,9 +1,16 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { ScrollText, Download, ChevronDown, ChevronUp } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Input } from "@/components/ui/input"
 
 interface LogEntry {
   id: string
@@ -15,6 +22,11 @@ interface LogEntry {
   error_message: string | null
   executed_at: string
   job: { id: string; name: string } | null
+}
+
+interface JobOption {
+  id: string
+  name: string
 }
 
 function formatDate(iso: string) {
@@ -97,42 +109,104 @@ function LogRow({ log }: { log: LogEntry }) {
 
 export function LogList() {
   const [logs, setLogs] = useState<LogEntry[]>([])
+  const [jobs, setJobs] = useState<JobOption[]>([])
   const [loading, setLoading] = useState(true)
 
+  const [jobId,  setJobId]  = useState("all")
+  const [status, setStatus] = useState("all")
+  const [from,   setFrom]   = useState("")
+  const [to,     setTo]     = useState("")
+
+  // Fetch job list once for the filter dropdown
   useEffect(() => {
-    fetch("/api/logs")
+    fetch("/api/queries")
+      .then((r) => r.json())
+      .then((data) => { if (Array.isArray(data)) setJobs(data.map((j: { id: string; name: string }) => ({ id: j.id, name: j.name }))) })
+      .catch(() => {})
+  }, [])
+
+  const fetchLogs = useCallback(() => {
+    setLoading(true)
+    const params = new URLSearchParams()
+    if (jobId  !== "all") params.set("job_id", jobId)
+    if (status !== "all") params.set("status", status)
+    if (from) params.set("from", new Date(from).toISOString())
+    if (to)   params.set("to",   new Date(to + "T23:59:59").toISOString())
+
+    fetch(`/api/logs?${params}`)
       .then((r) => r.json())
       .then((data) => { if (Array.isArray(data)) setLogs(data) })
       .finally(() => setLoading(false))
-  }, [])
+  }, [jobId, status, from, to])
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-20 text-xs text-muted-foreground">
-        Loading…
-      </div>
-    )
-  }
-
-  if (logs.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-white/10 bg-card/20 py-20 text-center">
-        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5">
-          <ScrollText className="h-5 w-5 text-muted-foreground/40" />
-        </div>
-        <p className="font-heading text-sm font-medium text-foreground">No runs yet</p>
-        <p className="mt-2 max-w-xs text-xs text-muted-foreground">
-          Logs appear here once a job executes. Each entry shows status, row count, file size, and delivery method.
-        </p>
-      </div>
-    )
-  }
+  useEffect(() => { fetchLogs() }, [fetchLogs])
 
   return (
-    <div className="flex flex-col gap-2">
-      {logs.map((log) => (
-        <LogRow key={log.id} log={log} />
-      ))}
+    <div className="flex flex-col gap-4">
+      {/* Filters */}
+      <div className="flex flex-wrap gap-2">
+        <Select value={jobId} onValueChange={setJobId}>
+          <SelectTrigger className="h-8 w-44 text-xs">
+            <SelectValue placeholder="All jobs" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All jobs</SelectItem>
+            {jobs.map((j) => (
+              <SelectItem key={j.id} value={j.id}>{j.name}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <Select value={status} onValueChange={setStatus}>
+          <SelectTrigger className="h-8 w-36 text-xs">
+            <SelectValue placeholder="All statuses" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All statuses</SelectItem>
+            <SelectItem value="success">Success</SelectItem>
+            <SelectItem value="failed">Failed</SelectItem>
+            <SelectItem value="running">Running</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <Input
+          type="date"
+          value={from}
+          onChange={(e) => setFrom(e.target.value)}
+          className="h-8 w-36 text-xs"
+          placeholder="From"
+        />
+        <Input
+          type="date"
+          value={to}
+          onChange={(e) => setTo(e.target.value)}
+          className="h-8 w-36 text-xs"
+          placeholder="To"
+        />
+      </div>
+
+      {/* Log rows */}
+      {loading ? (
+        <div className="flex items-center justify-center py-20 text-xs text-muted-foreground">
+          Loading…
+        </div>
+      ) : logs.length === 0 ? (
+        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-white/10 bg-card/20 py-20 text-center">
+          <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5">
+            <ScrollText className="h-5 w-5 text-muted-foreground/40" />
+          </div>
+          <p className="font-heading text-sm font-medium text-foreground">No runs yet</p>
+          <p className="mt-2 max-w-xs text-xs text-muted-foreground">
+            Logs appear here once a job executes. Each entry shows status, row count, file size, and delivery method.
+          </p>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-2">
+          {logs.map((log) => (
+            <LogRow key={log.id} log={log} />
+          ))}
+        </div>
+      )}
     </div>
   )
 }
