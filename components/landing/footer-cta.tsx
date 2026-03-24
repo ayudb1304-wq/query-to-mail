@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
+import { BrandLogo } from "@/components/brand-logo"
 
 export function FooterCta() {
   return (
@@ -31,9 +32,7 @@ export function FooterCta() {
       <Separator className="opacity-5" />
 
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-6 py-6 sm:flex-row">
-        <p className="font-heading text-xs text-muted-foreground/40">
-          Query<span className="text-primary/60">2</span>Mail
-        </p>
+        <BrandLogo imgClassName="h-7 w-auto rounded-md" />
         <div className="flex items-center gap-4">
           <Link href="/privacy" className="text-xs text-muted-foreground/40 hover:text-muted-foreground transition-colors">
             Privacy

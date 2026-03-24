@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { LoginForm } from "@/components/auth/login-form"
+import { BrandLogo } from "@/components/brand-logo"
 
 export const metadata = {
   title: "Sign in",
@@ -21,10 +22,8 @@ export default function LoginPage() {
 
       <div className="relative w-full max-w-sm">
         {/* Logo */}
-        <div className="mb-8 text-center">
-          <Link href="/" className="font-heading text-sm font-medium tracking-tight">
-            Query<span className="text-primary">2</span>Mail
-          </Link>
+        <div className="mb-8 flex flex-col items-center text-center">
+          <BrandLogo imgClassName="h-10 w-auto rounded-md" />
           <p className="mt-3 text-lg font-medium tracking-tight text-foreground">
             Sign in to your account
           </p>

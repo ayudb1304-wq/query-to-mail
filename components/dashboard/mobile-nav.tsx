@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
 import { SignOutButton } from "./sign-out-button"
+import { BrandLogo } from "@/components/brand-logo"
 
 const navItems = [
   { label: "Overview", href: "/dashboard", icon: LayoutDashboard, exact: true },
@@ -48,13 +49,7 @@ export function MobileNav({ user }: { user: User }) {
         <SheetContent side="left" className="w-56 border-r border-white/5 bg-card p-0">
           <SheetTitle className="sr-only">Navigation</SheetTitle>
           <div className="flex h-14 items-center border-b border-white/5 px-5">
-            <Link
-              href="/"
-              className="font-heading text-sm font-medium tracking-tight"
-              onClick={() => setOpen(false)}
-            >
-              Query<span className="text-primary">2</span>Mail
-            </Link>
+            <BrandLogo onNavigate={() => setOpen(false)} />
           </div>
 
           <nav className="flex flex-col gap-0.5 p-3">

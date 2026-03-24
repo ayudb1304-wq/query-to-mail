@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { SignOutButton } from "./sign-out-button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { BrandLogo } from "@/components/brand-logo"
 
 const navItems = [
   { label: "Overview", href: "/dashboard", icon: LayoutDashboard, exact: true },
@@ -34,9 +35,7 @@ export function Sidebar({ user }: { user: User }) {
     <aside className="hidden h-screen w-56 shrink-0 flex-col border-r border-white/5 bg-card/30 lg:flex">
       {/* Logo */}
       <div className="flex h-14 items-center border-b border-white/5 px-5">
-        <Link href="/" className="font-heading text-sm font-medium tracking-tight">
-          Query<span className="text-primary">2</span>Mail
-        </Link>
+        <BrandLogo />
       </div>
 
       {/* Nav */}

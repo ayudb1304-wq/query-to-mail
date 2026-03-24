@@ -12,7 +12,7 @@ const organizationSchema = {
   "@type": "Organization",
   name: "Query2Mail",
   url: "https://query2mail.com",
-  logo: "https://query2mail.com/icon.png",
+  logo: "https://query2mail.com/logo-querytomail.png",
   description:
     "Automated SQL-to-Excel reporting. Run queries on a schedule, deliver formatted Excel files to any inbox.",
 }
