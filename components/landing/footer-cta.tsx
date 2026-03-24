@@ -30,13 +30,18 @@ export function FooterCta() {
 
       <Separator className="opacity-5" />
 
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
+      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-6 py-6 sm:flex-row">
         <p className="font-heading text-xs text-muted-foreground/40">
           Query<span className="text-primary/60">2</span>Mail
         </p>
-        <p className="text-xs text-muted-foreground/40">
-          Built for data engineers who are tired of being accidental BI developers.
-        </p>
+        <div className="flex items-center gap-4">
+          <Link href="/privacy" className="text-xs text-muted-foreground/40 hover:text-muted-foreground transition-colors">
+            Privacy
+          </Link>
+          <Link href="/terms" className="text-xs text-muted-foreground/40 hover:text-muted-foreground transition-colors">
+            Terms
+          </Link>
+        </div>
       </div>
     </footer>
   )

@@ -4,6 +4,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 
+
 function ScrollLink({
   href,
   children,
@@ -53,6 +54,18 @@ export function Navbar() {
           >
             Pricing
           </ScrollLink>
+          <Link
+            href="/features"
+            className="hidden text-xs text-muted-foreground transition-colors hover:text-foreground sm:block"
+          >
+            Features
+          </Link>
+          <Link
+            href="/blog"
+            className="hidden text-xs text-muted-foreground transition-colors hover:text-foreground sm:block"
+          >
+            Blog
+          </Link>
           <Button size="sm" asChild>
             <Link href="/login">Start automating →</Link>
           </Button>

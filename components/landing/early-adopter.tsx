@@ -5,6 +5,7 @@ import { toast } from "sonner"
 import { Zap, Check, RefreshCw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { trackEvent } from "@/components/analytics/ga4"
 
 const TOTAL_SPOTS = 20
 
@@ -90,6 +91,7 @@ export function EarlyAdopter() {
       }
       setState("success")
       setEmail("")
+      trackEvent("waitlist_signup", { method: "landing_page" })
       // Refresh counter — the user just moved it
       fetchCount()
     } catch {

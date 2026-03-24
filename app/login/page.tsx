@@ -2,7 +2,8 @@ import Link from "next/link"
 import { LoginForm } from "@/components/auth/login-form"
 
 export const metadata = {
-  title: "Sign in — Query2Mail",
+  title: "Sign in",
+  alternates: { canonical: "/login" },
 }
 
 export default function LoginPage() {

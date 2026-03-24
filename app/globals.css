@@ -127,3 +127,28 @@
     @apply font-mono;
     }
 }
+
+@layer components {
+  /* Blog post body typography */
+  .prose-blog h2 {
+    @apply mt-10 mb-3 font-heading text-xl font-medium text-foreground;
+  }
+  .prose-blog h3 {
+    @apply mt-6 mb-2 font-heading text-base font-medium text-foreground;
+  }
+  .prose-blog p {
+    @apply mb-4 text-sm leading-relaxed text-muted-foreground;
+  }
+  .prose-blog ul {
+    @apply mb-4 ml-4 list-disc space-y-2;
+  }
+  .prose-blog li {
+    @apply text-sm leading-relaxed text-muted-foreground;
+  }
+  .prose-blog strong {
+    @apply font-medium text-foreground;
+  }
+  .prose-blog code {
+    @apply rounded bg-white/5 px-1.5 py-0.5 font-mono text-xs text-foreground;
+  }
+}
