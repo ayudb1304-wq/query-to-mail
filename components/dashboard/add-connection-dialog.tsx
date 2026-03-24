@@ -27,11 +27,34 @@ function FieldHelp({ children }: { children: React.ReactNode }) {
       <TooltipTrigger asChild>
         <HelpCircle className="h-3 w-3 cursor-help text-muted-foreground/40 hover:text-muted-foreground/70" />
       </TooltipTrigger>
-      <TooltipContent side="right" className="max-w-60 text-xs leading-relaxed">
-        <p>{children}</p>
+      <TooltipContent side="right" className="max-w-64 text-xs leading-relaxed">
+        <p className="[&_b]:font-semibold [&_code]:font-mono">{children}</p>
       </TooltipContent>
     </Tooltip>
   )
+}
+
+const TOOLTIPS: Record<DbType, {
+  host: React.ReactNode
+  port: React.ReactNode
+  databaseName: React.ReactNode
+  username: React.ReactNode
+  password: React.ReactNode
+}> = {
+  postgres: {
+    host: <>The hostname of your PostgreSQL server. For Supabase, use the <b>Session mode pooler host</b> from Settings → Database → Connection pooling (e.g. <code>aws-0-[region].pooler.supabase.com</code>). The direct host is IPv6-only and may not connect.</>,
+    port: <>Default PostgreSQL port is <code>5432</code>. For Supabase session pooler use <code>5432</code>; for transaction pooler (PgBouncer) use <code>6543</code>.</>,
+    databaseName: <>The database to connect to. Usually <code>postgres</code> for most hosted providers including Supabase, Railway, and Neon.</>,
+    username: <>Your database user. For Supabase with the pooler, the username includes the project ref: <code>postgres.[project-ref]</code>. Find it in Settings → Database → Connection pooling.</>,
+    password: <>Your database password. For Supabase, go to Settings → Database → Database password. This is your DB password — not the anon key or service role key.</>,
+  },
+  mysql: {
+    host: <>The hostname of your MySQL server. Found in your hosting provider's dashboard or connection string. For PlanetScale use the host from Settings → Passwords.</>,
+    port: <>Default MySQL port is <code>3306</code>. Some cloud providers use custom ports — check your connection string.</>,
+    databaseName: <>The name of the MySQL database (schema) to connect to. Found in your hosting provider's dashboard.</>,
+    username: <>Your MySQL database user. For PlanetScale use the username from a generated password set.</>,
+    password: <>Your MySQL database password. For PlanetScale, this is generated when you create a password set — it's only shown once.</>,
+  },
 }
 
 export function AddConnectionDialog({ onCreated }: Props) {
@@ -138,18 +161,11 @@ export function AddConnectionDialog({ onCreated }: Props) {
             <div className="col-span-2 flex flex-col gap-1.5">
               <div className="flex items-center gap-1">
                 <Label htmlFor="host" className="text-xs text-muted-foreground">Host</Label>
-                <FieldHelp>
-                  For Supabase, use the <span className="font-medium text-foreground">pooler host</span> (IPv4
-                  compatible): go to{" "}
-                  <span className="font-medium text-foreground">Settings → Database → Connection pooling → Session mode</span>.
-                  Looks like{" "}
-                  <span className="font-mono text-primary">aws-0-[region].pooler.supabase.com</span>.
-                  The direct host (<span className="font-mono">db.[ref].supabase.co</span>) is IPv6-only and may not resolve.
-                </FieldHelp>
+                <FieldHelp>{TOOLTIPS[dbType].host}</FieldHelp>
               </div>
               <Input
                 id="host"
-                placeholder="db.xxxx.supabase.co"
+                placeholder={dbType === "postgres" ? "db.xxxx.supabase.co" : "your-db-host.example.com"}
                 value={host}
                 onChange={(e) => setHost(e.target.value)}
                 required
@@ -159,12 +175,7 @@ export function AddConnectionDialog({ onCreated }: Props) {
             <div className="flex flex-col gap-1.5">
               <div className="flex items-center gap-1">
                 <Label htmlFor="port" className="text-xs text-muted-foreground">Port</Label>
-                <FieldHelp>
-                  PostgreSQL default: <span className="font-mono text-primary">5432</span>. MySQL default:{" "}
-                  <span className="font-mono text-primary">3306</span>. For Supabase, use{" "}
-                  <span className="font-mono text-primary">5432</span> for a direct connection or{" "}
-                  <span className="font-mono text-primary">6543</span> for the connection pooler (PgBouncer).
-                </FieldHelp>
+                <FieldHelp>{TOOLTIPS[dbType].port}</FieldHelp>
               </div>
               <Input
                 id="port"
@@ -181,11 +192,7 @@ export function AddConnectionDialog({ onCreated }: Props) {
           <div className="flex flex-col gap-1.5">
             <div className="flex items-center gap-1">
               <Label htmlFor="database_name" className="text-xs text-muted-foreground">Database name</Label>
-              <FieldHelp>
-                The name of the database to connect to. For Supabase this is always{" "}
-                <span className="font-mono text-primary">postgres</span>. For other hosted providers,
-                check your dashboard or connection string.
-              </FieldHelp>
+              <FieldHelp>{TOOLTIPS[dbType].databaseName}</FieldHelp>
             </div>
             <Input
               id="database_name"
@@ -202,11 +209,7 @@ export function AddConnectionDialog({ onCreated }: Props) {
             <div className="flex flex-col gap-1.5">
               <div className="flex items-center gap-1">
                 <Label htmlFor="username" className="text-xs text-muted-foreground">Username</Label>
-                <FieldHelp>
-                  For Supabase with the connection pooler, the username includes your project ref:{" "}
-                  <span className="font-mono text-primary">postgres.[project-ref]</span>. Find it in{" "}
-                  <span className="font-medium text-foreground">Settings → Database → Connection pooling → Session mode</span>.
-                </FieldHelp>
+                <FieldHelp>{TOOLTIPS[dbType].username}</FieldHelp>
               </div>
               <Input
                 id="username"
@@ -220,11 +223,7 @@ export function AddConnectionDialog({ onCreated }: Props) {
             <div className="flex flex-col gap-1.5">
               <div className="flex items-center gap-1">
                 <Label htmlFor="password" className="text-xs text-muted-foreground">Password</Label>
-                <FieldHelp>
-                  For Supabase: go to{" "}
-                  <span className="font-medium text-foreground">Settings → Database → Database password</span>.
-                  This is your DB password — not your anon key or service role key.
-                </FieldHelp>
+                <FieldHelp>{TOOLTIPS[dbType].password}</FieldHelp>
               </div>
               <Input
                 id="password"
