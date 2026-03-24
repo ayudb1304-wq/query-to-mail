@@ -166,27 +166,17 @@ External DBs
 
 ---
 
-### Phase 4 — Query Editor + Scheduler (Days 4–5)
+### ~~Phase 4 — Query Editor + Scheduler~~ ✅ Done
 
-**UI:**
-- "New Job" page: multi-step form
-  1. Pick a connection (dropdown)
-  2. Write SQL — monospaced `<textarea>` (shadcn `Textarea` + custom font)
-  3. Set schedule — human-friendly picker (Daily, Weekly, Monthly) that maps to cron string
-  4. Add recipient emails — tag input (comma-separated)
-  5. Job name + save
-
-**Cron helper:** Map UI selections → cron expressions
-- Daily at time → `0 HH * * *`
-- Weekly (day + time) → `0 HH * * D`
-- Monthly (day + time) → `0 HH DD * *`
-
-**API routes:**
-- `POST /api/queries` — create job, compute `next_run_at`
-- `GET /api/queries` — list
-- `PATCH /api/queries/:id` — update (toggle active, edit)
-- `DELETE /api/queries/:id`
-- `POST /api/queries/:id/run` — manual trigger
+- [x] `lib/cron-utils.ts` — buildCronExpression, cronToDescription, computeNextRunAt (cron-parser)
+- [x] `app/api/queries/route.ts` — GET (list with connection join) + POST (create, compute next_run_at)
+- [x] `app/api/queries/[id]/route.ts` — PATCH (toggle active, update) + DELETE
+- [x] `app/api/queries/[id]/run/route.ts` — POST stub (wired in Phase 5)
+- [x] `components/dashboard/create-job-form.tsx` — name, connection dropdown, SQL textarea, schedule picker (daily/weekly/monthly + time), recipient tag input with live preview
+- [x] `components/dashboard/job-list.tsx` — fetches jobs, active toggle (Switch), run button, delete, cron description
+- [x] `app/dashboard/jobs/page.tsx` — wired to JobList
+- [x] `app/dashboard/jobs/new/page.tsx` — CreateJobForm with back link
+- [x] shadcn: Textarea, Switch; cron-parser installed
 
 ---
 
