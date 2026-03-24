@@ -20,5 +20,8 @@ export async function GET() {
   const claimed = Math.min((count ?? 0) + BASE_COUNT, TOTAL_SPOTS)
   const remaining = TOTAL_SPOTS - claimed
 
-  return NextResponse.json({ claimed, remaining, total: TOTAL_SPOTS })
+  return NextResponse.json(
+    { claimed, remaining, total: TOTAL_SPOTS },
+    { headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300" } },
+  )
 }

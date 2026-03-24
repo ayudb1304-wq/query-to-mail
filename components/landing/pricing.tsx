@@ -74,11 +74,9 @@ export function Pricing() {
             <CardHeader className="pb-4 pt-6">
               <div className="flex items-center gap-2">
                 <p className="font-heading text-xs text-muted-foreground">{plan.name}</p>
-                {plan.featured && (
-                  <Badge variant="secondary" className="border border-white/10 bg-white/5 text-[10px] text-muted-foreground">
-                    Coming soon
-                  </Badge>
-                )}
+                <Badge variant="secondary" className="border border-white/10 bg-white/5 text-[10px] text-muted-foreground">
+                  Coming soon
+                </Badge>
               </div>
               <div className="flex items-baseline gap-1">
                 <span className="font-heading text-4xl font-medium text-foreground">
