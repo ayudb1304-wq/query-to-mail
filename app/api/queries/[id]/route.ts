@@ -11,6 +11,27 @@ const patchSchema = z.object({
   is_active: z.boolean().optional(),
 })
 
+export async function GET(
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const supabase = await createServerSupabaseClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: "Unauthorized." }, { status: 401 })
+
+  const { id } = await params
+
+  const { data, error } = await supabase
+    .from("query_jobs")
+    .select("id, name, connection_id, sql_query, cron_expression, recipients, is_active")
+    .eq("id", id)
+    .eq("user_id", user.id)
+    .single()
+
+  if (error || !data) return NextResponse.json({ error: "Not found." }, { status: 404 })
+  return NextResponse.json(data)
+}
+
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> },

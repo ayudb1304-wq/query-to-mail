@@ -9,9 +9,18 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { buildCronExpression, cronToDescription, DAY_NAMES, type Frequency } from "@/lib/cron-utils"
+import { buildCronExpression, parseCronExpression, cronToDescription, DAY_NAMES, type Frequency } from "@/lib/cron-utils"
 
 interface Connection { id: string; name: string; db_type: string }
+
+interface InitialJob {
+  id: string
+  name: string
+  connection_id: string
+  sql_query: string
+  cron_expression: string
+  recipients: string[]
+}
 
 const HOURS   = Array.from({ length: 24 }, (_, i) => i)
 const MINUTES = [0, 15, 30, 45]
@@ -19,31 +28,35 @@ const DOM     = Array.from({ length: 28 }, (_, i) => i + 1)
 
 function pad(n: number) { return n.toString().padStart(2, "0") }
 
-export function CreateJobForm() {
+export function CreateJobForm({ initialJob }: { initialJob?: InitialJob }) {
   const router = useRouter()
+  const isEditing = !!initialJob
   const [loading, setLoading] = useState(false)
   const [connections, setConnections] = useState<Connection[]>([])
 
+  const parsed = initialJob ? parseCronExpression(initialJob.cron_expression) : null
+
   // Form state
-  const [name, setName]               = useState("")
-  const [connectionId, setConnectionId] = useState("")
-  const [sql, setSql]                 = useState("")
-  const [frequency, setFrequency]     = useState<Frequency>("daily")
-  const [hour, setHour]               = useState(8)
-  const [minute, setMinute]           = useState(0)
-  const [dayOfWeek, setDayOfWeek]     = useState(1)
-  const [dayOfMonth, setDayOfMonth]   = useState(1)
+  const [name, setName]               = useState(initialJob?.name ?? "")
+  const [connectionId, setConnectionId] = useState(initialJob?.connection_id ?? "")
+  const [sql, setSql]                 = useState(initialJob?.sql_query ?? "")
+  const [frequency, setFrequency]     = useState<Frequency>(parsed?.frequency ?? "daily")
+  const [hour, setHour]               = useState(parsed?.hour ?? 8)
+  const [minute, setMinute]           = useState(parsed?.minute ?? 0)
+  const [dayOfWeek, setDayOfWeek]     = useState(parsed?.dayOfWeek ?? 1)
+  const [dayOfMonth, setDayOfMonth]   = useState(parsed?.dayOfMonth ?? 1)
   const [recipientInput, setRecipientInput] = useState("")
-  const [recipients, setRecipients]   = useState<string[]>([])
+  const [recipients, setRecipients]   = useState<string[]>(initialJob?.recipients ?? [])
 
   useEffect(() => {
     fetch("/api/connections")
       .then((r) => r.json())
       .then((data) => {
         setConnections(data)
-        if (data.length > 0) setConnectionId(data[0].id)
+        if (!initialJob && data.length > 0) setConnectionId(data[0].id)
       })
       .catch(() => {})
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const cron = buildCronExpression(frequency, hour, minute, dayOfWeek, dayOfMonth)
@@ -72,14 +85,20 @@ export function CreateJobForm() {
     }
     setLoading(true)
     try {
-      const res = await fetch("/api/queries", {
-        method: "POST",
+      const url    = isEditing ? `/api/queries/${initialJob!.id}` : "/api/queries"
+      const method = isEditing ? "PATCH" : "POST"
+      const body   = isEditing
+        ? { name, sql_query: sql, cron_expression: cron, recipients }
+        : { name, connection_id: connectionId, sql_query: sql, cron_expression: cron, recipients }
+
+      const res = await fetch(url, {
+        method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, connection_id: connectionId, sql_query: sql, cron_expression: cron, recipients }),
+        body: JSON.stringify(body),
       })
       const data = await res.json()
-      if (!res.ok) { toast.error(data.error ?? "Failed to create job."); return }
-      toast.success("Job created.")
+      if (!res.ok) { toast.error(data.error ?? `Failed to ${isEditing ? "update" : "create"} job.`); return }
+      toast.success(isEditing ? "Job updated." : "Job created.")
       router.push("/dashboard/jobs")
     } catch {
       toast.error("Something went wrong.")
@@ -237,7 +256,7 @@ export function CreateJobForm() {
           Cancel
         </Button>
         <Button type="submit" size="sm" disabled={loading || connections.length === 0}>
-          {loading ? "Saving…" : "Create job"}
+          {loading ? "Saving…" : isEditing ? "Save changes" : "Create job"}
         </Button>
       </div>
     </form>

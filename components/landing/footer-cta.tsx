@@ -1,5 +1,6 @@
+import Link from "next/link"
 import { Separator } from "@/components/ui/separator"
-import { WaitlistForm } from "./waitlist-form"
+import { Button } from "@/components/ui/button"
 
 export function FooterCta() {
   return (
@@ -20,11 +21,11 @@ export function FooterCta() {
           Stop being the accidental BI developer.
         </h2>
         <p className="mb-8 text-sm text-muted-foreground">
-          Join the waitlist. Be the first to automate your reporting pipeline.
+          Connect your database, write a query, set a schedule. Done.
         </p>
-        <div className="mx-auto max-w-md">
-          <WaitlistForm size="lg" />
-        </div>
+        <Button size="lg" asChild>
+          <Link href="/login">Start automating for free</Link>
+        </Button>
       </div>
 
       <Separator className="opacity-5" />

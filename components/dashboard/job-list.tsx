@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react"
 import Link from "next/link"
 import { toast } from "sonner"
-import { CalendarClock, Plus, Play, Trash2, Loader2 } from "lucide-react"
+import { CalendarClock, Plus, Play, Trash2, Loader2, Pencil } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
@@ -161,6 +161,16 @@ export function JobList() {
                     ? <Loader2 className="h-3.5 w-3.5 animate-spin" />
                     : <Play className="h-3.5 w-3.5" />}
                   <span className="sr-only">Run</span>
+                </Button>
+                <Button
+                  variant="ghost" size="icon"
+                  className="h-7 w-7 text-muted-foreground/40 hover:text-foreground"
+                  asChild
+                >
+                  <Link href={`/dashboard/jobs/${job.id}/edit`}>
+                    <Pencil className="h-3.5 w-3.5" />
+                    <span className="sr-only">Edit</span>
+                  </Link>
                 </Button>
                 <Button
                   variant="ghost" size="icon"

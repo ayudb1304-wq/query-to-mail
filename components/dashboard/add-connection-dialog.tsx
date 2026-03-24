@@ -34,6 +34,23 @@ function FieldHelp({ children }: { children: React.ReactNode }) {
   )
 }
 
+const PLACEHOLDERS: Record<DbType, {
+  host: string
+  databaseName: string
+  username: string
+}> = {
+  postgres: {
+    host: "aws-0-us-east-1.pooler.supabase.com",
+    databaseName: "postgres",
+    username: "postgres.your-project-ref",
+  },
+  mysql: {
+    host: "your-db-host.example.com",
+    databaseName: "my_database",
+    username: "root",
+  },
+}
+
 const TOOLTIPS: Record<DbType, {
   host: React.ReactNode
   port: React.ReactNode
@@ -165,7 +182,7 @@ export function AddConnectionDialog({ onCreated }: Props) {
               </div>
               <Input
                 id="host"
-                placeholder={dbType === "postgres" ? "db.xxxx.supabase.co" : "your-db-host.example.com"}
+                placeholder={PLACEHOLDERS[dbType].host}
                 value={host}
                 onChange={(e) => setHost(e.target.value)}
                 required
@@ -196,7 +213,7 @@ export function AddConnectionDialog({ onCreated }: Props) {
             </div>
             <Input
               id="database_name"
-              placeholder="postgres"
+              placeholder={PLACEHOLDERS[dbType].databaseName}
               value={databaseName}
               onChange={(e) => setDatabaseName(e.target.value)}
               required
@@ -213,7 +230,7 @@ export function AddConnectionDialog({ onCreated }: Props) {
               </div>
               <Input
                 id="username"
-                placeholder="postgres"
+                placeholder={PLACEHOLDERS[dbType].username}
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required

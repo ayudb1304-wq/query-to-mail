@@ -50,6 +50,27 @@ export function cronToDescription(cron: string): string {
   return `Daily at ${time}`
 }
 
+export function parseCronExpression(cron: string): {
+  frequency: Frequency
+  hour: number
+  minute: number
+  dayOfWeek: number
+  dayOfMonth: number
+} {
+  const parts = cron.trim().split(/\s+/)
+  const [minuteStr, hourStr, domStr, , dowStr] = parts
+  const minute = parseInt(minuteStr) || 0
+  const hour   = parseInt(hourStr)   || 0
+
+  if (dowStr !== "*") {
+    return { frequency: "weekly",  hour, minute, dayOfWeek: parseInt(dowStr) || 1, dayOfMonth: 1 }
+  }
+  if (domStr !== "*") {
+    return { frequency: "monthly", hour, minute, dayOfWeek: 1, dayOfMonth: parseInt(domStr) || 1 }
+  }
+  return { frequency: "daily", hour, minute, dayOfWeek: 1, dayOfMonth: 1 }
+}
+
 export function computeNextRunAt(cron: string): Date {
   const interval = CronExpressionParser.parse(cron, { tz: "UTC" })
   return interval.next().toDate()
