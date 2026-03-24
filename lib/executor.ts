@@ -108,7 +108,7 @@ export async function executeJob(jobId: string): Promise<void> {
   // Create running log entry
   const { data: logEntry } = await supabase
     .from("job_logs")
-    .insert({ job_id: jobId, status: "running", executed_at: now.toISOString() })
+    .insert({ job_id: jobId, user_id: job.user_id, status: "running", executed_at: now.toISOString() })
     .select("id")
     .single()
 
