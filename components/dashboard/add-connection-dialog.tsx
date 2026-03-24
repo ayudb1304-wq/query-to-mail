@@ -139,10 +139,12 @@ export function AddConnectionDialog({ onCreated }: Props) {
               <div className="flex items-center gap-1">
                 <Label htmlFor="host" className="text-xs text-muted-foreground">Host</Label>
                 <FieldHelp>
-                  The server hostname. For Supabase: go to{" "}
-                  <span className="font-medium text-foreground">Settings → Database → Connection string</span>{" "}
-                  and copy the Host value. Looks like{" "}
-                  <span className="font-mono text-primary">db.[ref].supabase.co</span>
+                  For Supabase, use the <span className="font-medium text-foreground">pooler host</span> (IPv4
+                  compatible): go to{" "}
+                  <span className="font-medium text-foreground">Settings → Database → Connection pooling → Session mode</span>.
+                  Looks like{" "}
+                  <span className="font-mono text-primary">aws-0-[region].pooler.supabase.com</span>.
+                  The direct host (<span className="font-mono">db.[ref].supabase.co</span>) is IPv6-only and may not resolve.
                 </FieldHelp>
               </div>
               <Input
@@ -201,10 +203,9 @@ export function AddConnectionDialog({ onCreated }: Props) {
               <div className="flex items-center gap-1">
                 <Label htmlFor="username" className="text-xs text-muted-foreground">Username</Label>
                 <FieldHelp>
-                  The database user. For Supabase: go to{" "}
-                  <span className="font-medium text-foreground">Settings → Database</span> — the default
-                  user is <span className="font-mono text-primary">postgres</span>. Use a read-only user
-                  if you have one.
+                  For Supabase with the connection pooler, the username includes your project ref:{" "}
+                  <span className="font-mono text-primary">postgres.[project-ref]</span>. Find it in{" "}
+                  <span className="font-medium text-foreground">Settings → Database → Connection pooling → Session mode</span>.
                 </FieldHelp>
               </div>
               <Input
