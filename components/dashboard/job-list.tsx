@@ -62,7 +62,7 @@ export function JobList() {
     try {
       const res = await fetch(`/api/queries/${id}/run`, { method: "POST" })
       if (res.ok) {
-        toast.success("Job queued. Check Logs once execution is implemented.")
+        toast.success("Job executed. Check Logs for the result.")
       } else {
         toast.error("Failed to run job.")
       }
