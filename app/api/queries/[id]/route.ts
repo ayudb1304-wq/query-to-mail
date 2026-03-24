@@ -7,6 +7,7 @@ const patchSchema = z.object({
   name: z.string().min(1).optional(),
   sql_query: z.string().min(1).optional(),
   cron_expression: z.string().min(1).optional(),
+  timezone: z.string().min(1).optional(),
   recipients: z.array(z.string().email()).min(1).optional(),
   is_active: z.boolean().optional(),
 })
@@ -23,7 +24,7 @@ export async function GET(
 
   const { data, error } = await supabase
     .from("query_jobs")
-    .select("id, name, connection_id, sql_query, cron_expression, recipients, is_active")
+    .select("id, name, connection_id, sql_query, cron_expression, timezone, recipients, is_active")
     .eq("id", id)
     .eq("user_id", user.id)
     .single()
@@ -44,7 +45,7 @@ export async function PATCH(
 
   const { data: existing } = await supabase
     .from("query_jobs")
-    .select("id")
+    .select("id, cron_expression, timezone")
     .eq("id", id)
     .eq("user_id", user.id)
     .single()
@@ -61,8 +62,10 @@ export async function PATCH(
   }
 
   const update: Record<string, unknown> = { ...parsed.data }
-  if (parsed.data.cron_expression) {
-    update.next_run_at = computeNextRunAt(parsed.data.cron_expression).toISOString()
+  if (parsed.data.cron_expression || parsed.data.timezone) {
+    const cron = parsed.data.cron_expression ?? existing.cron_expression
+    const tz   = parsed.data.timezone ?? existing.timezone ?? "UTC"
+    update.next_run_at = computeNextRunAt(cron, tz).toISOString()
   }
 
   const service = createServiceClient()

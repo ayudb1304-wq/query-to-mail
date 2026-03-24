@@ -8,6 +8,7 @@ const createSchema = z.object({
   connection_id: z.string().uuid("Invalid connection."),
   sql_query: z.string().min(1, "SQL query is required."),
   cron_expression: z.string().min(1, "Schedule is required."),
+  timezone: z.string().min(1).default("UTC"),
   recipients: z.array(z.string().email()).min(1, "At least one recipient is required."),
 })
 
@@ -18,7 +19,7 @@ export async function GET() {
 
   const { data, error } = await supabase
     .from("query_jobs")
-    .select("id, name, sql_query, cron_expression, recipients, is_active, last_run_at, next_run_at, created_at, connection:connections(id, name, db_type)")
+    .select("id, name, sql_query, cron_expression, timezone, recipients, is_active, last_run_at, next_run_at, created_at, connection:connections(id, name, db_type)")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false })
 
@@ -51,7 +52,7 @@ export async function POST(request: Request) {
 
   if (!conn) return NextResponse.json({ error: "Connection not found." }, { status: 404 })
 
-  const next_run_at = computeNextRunAt(parsed.data.cron_expression)
+  const next_run_at = computeNextRunAt(parsed.data.cron_expression, parsed.data.timezone)
 
   const service = createServiceClient()
   const { data, error } = await service

@@ -26,14 +26,14 @@ function EarlyAccessStrip() {
         e.preventDefault()
         document.getElementById("early-access")?.scrollIntoView({ behavior: "smooth" })
       }}
-      className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-xs text-primary transition-colors hover:bg-primary/15"
+      className="inline-flex max-w-xs items-start gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-center text-xs text-primary transition-colors hover:bg-primary/15 sm:max-w-none sm:items-center"
     >
-      <Zap className="h-3 w-3 shrink-0" />
+      <Zap className="mt-0.5 h-3 w-3 shrink-0 sm:mt-0" />
       <span>
         <strong>{remaining} early adopter spot{remaining !== 1 ? "s" : ""} left</strong>
         {" — "}lock in 2 months free + discounted pricing forever
       </span>
-      <span className="text-primary/60">↓</span>
+      <span className="hidden text-primary/60 sm:inline">↓</span>
     </a>
   )
 }
@@ -70,8 +70,7 @@ export function Hero() {
         </Badge>
 
         <h1 className="font-heading text-4xl font-medium leading-[1.15] tracking-tight text-foreground sm:text-5xl md:text-6xl">
-          Your stakeholders don&apos;t need a dashboard.
-          <br />
+          Your stakeholders don&apos;t need a dashboard.{" "}
           <span className="text-primary">
             They need the answer in their inbox.
           </span>
@@ -84,13 +83,13 @@ export function Hero() {
         </p>
 
         <div className="flex flex-col items-center gap-4">
-          <div className="flex items-center gap-3">
-            <Button size="lg" asChild className="gap-2">
+          <div className="flex w-full flex-col items-center gap-3 sm:w-auto sm:flex-row">
+            <Button size="lg" asChild className="w-full gap-2 sm:w-auto">
               <Link href="/login">
                 Send your first report in 5 min →
               </Link>
             </Button>
-            <Button size="lg" variant="ghost" asChild>
+            <Button size="lg" variant="ghost" asChild className="w-full sm:w-auto">
               <a
                 href="#how-it-works"
                 onClick={(e) => {

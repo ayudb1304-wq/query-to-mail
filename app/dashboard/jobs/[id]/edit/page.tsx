@@ -17,7 +17,7 @@ export default async function EditJobPage({
 
   const { data: job } = await supabase
     .from("query_jobs")
-    .select("id, name, connection_id, sql_query, cron_expression, recipients")
+    .select("id, name, connection_id, sql_query, cron_expression, timezone, recipients")
     .eq("id", id)
     .eq("user_id", user!.id)
     .single()

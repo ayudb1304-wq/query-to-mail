@@ -30,7 +30,7 @@ export function buildCronExpression(
   throw new Error(`Unknown frequency: ${frequency}`)
 }
 
-export function cronToDescription(cron: string): string {
+export function cronToDescription(cron: string, tz = "UTC"): string {
   const parts = cron.trim().split(/\s+/)
   if (parts.length !== 5) return cron
 
@@ -38,16 +38,17 @@ export function cronToDescription(cron: string): string {
   const h = parseInt(hour)
   const m = parseInt(minute)
   const time = formatTime(h, m)
+  const tzLabel = tz === "UTC" ? "UTC" : tz
 
   if (dow !== "*") {
     const dayName = DAY_NAMES[parseInt(dow)] ?? dow
-    return `Weekly on ${dayName} at ${time}`
+    return `Weekly on ${dayName} at ${time} (${tzLabel})`
   }
   if (dom !== "*") {
     const suffix = parseInt(dom) === 1 ? "st" : parseInt(dom) === 2 ? "nd" : parseInt(dom) === 3 ? "rd" : "th"
-    return `Monthly on the ${dom}${suffix} at ${time}`
+    return `Monthly on the ${dom}${suffix} at ${time} (${tzLabel})`
   }
-  return `Daily at ${time}`
+  return `Daily at ${time} (${tzLabel})`
 }
 
 export function parseCronExpression(cron: string): {
@@ -71,8 +72,8 @@ export function parseCronExpression(cron: string): {
   return { frequency: "daily", hour, minute, dayOfWeek: 1, dayOfMonth: 1 }
 }
 
-export function computeNextRunAt(cron: string): Date {
-  const interval = CronExpressionParser.parse(cron, { tz: "UTC" })
+export function computeNextRunAt(cron: string, tz = "UTC"): Date {
+  const interval = CronExpressionParser.parse(cron, { tz })
   return interval.next().toDate()
 }
 

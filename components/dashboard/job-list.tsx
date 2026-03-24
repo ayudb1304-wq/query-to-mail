@@ -14,6 +14,7 @@ interface Job {
   name: string
   sql_query: string
   cron_expression: string
+  timezone: string
   recipients: string[]
   is_active: boolean
   last_run_at: string | null
@@ -135,7 +136,7 @@ export function JobList() {
                 </div>
 
                 <div className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
-                  <span>🕐 {cronToDescription(job.cron_expression)}</span>
+                  <span>🕐 {cronToDescription(job.cron_expression, job.timezone)}</span>
                   <span>📧 {job.recipients.length} recipient{job.recipients.length !== 1 ? "s" : ""}</span>
                   <span>Last run: {formatDate(job.last_run_at)}</span>
                 </div>

@@ -23,6 +23,7 @@ interface JobRecord {
   name: string
   sql_query: string
   cron_expression: string
+  timezone: string
   recipients: string[]
   connections: ConnectionRecord
 }
@@ -95,7 +96,7 @@ export async function executeJob(jobId: string): Promise<void> {
   const { data: job, error: jobError } = await supabase
     .from("query_jobs")
     .select(`
-      id, user_id, name, sql_query, cron_expression, recipients,
+      id, user_id, name, sql_query, cron_expression, timezone, recipients,
       connections ( db_type, host, port, database_name, username_enc, password_enc )
     `)
     .eq("id", jobId)
@@ -169,7 +170,7 @@ export async function executeJob(jobId: string): Promise<void> {
       .from("query_jobs")
       .update({
         last_run_at: now.toISOString(),
-        next_run_at: computeNextRunAt(job.cron_expression).toISOString(),
+        next_run_at: computeNextRunAt(job.cron_expression, (job as unknown as JobRecord).timezone).toISOString(),
       })
       .eq("id", jobId)
   } catch (err) {

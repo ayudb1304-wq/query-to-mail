@@ -19,8 +19,19 @@ interface InitialJob {
   connection_id: string
   sql_query: string
   cron_expression: string
+  timezone: string
   recipients: string[]
 }
+
+// All IANA timezone names available in the runtime
+const TIMEZONES: string[] = (() => {
+  try {
+    return (Intl as unknown as { supportedValuesOf: (k: string) => string[] })
+      .supportedValuesOf("timeZone")
+  } catch {
+    return ["UTC"]
+  }
+})()
 
 const HOURS   = Array.from({ length: 24 }, (_, i) => i)
 const MINUTES = [0, 15, 30, 45]
@@ -45,6 +56,11 @@ export function CreateJobForm({ initialJob }: { initialJob?: InitialJob }) {
   const [minute, setMinute]           = useState(parsed?.minute ?? 0)
   const [dayOfWeek, setDayOfWeek]     = useState(parsed?.dayOfWeek ?? 1)
   const [dayOfMonth, setDayOfMonth]   = useState(parsed?.dayOfMonth ?? 1)
+  const [timezone, setTimezone]       = useState(
+    initialJob?.timezone ?? (typeof Intl !== "undefined"
+      ? Intl.DateTimeFormat().resolvedOptions().timeZone
+      : "UTC")
+  )
   const [recipientInput, setRecipientInput] = useState("")
   const [recipients, setRecipients]   = useState<string[]>(initialJob?.recipients ?? [])
 
@@ -60,7 +76,7 @@ export function CreateJobForm({ initialJob }: { initialJob?: InitialJob }) {
   }, [])
 
   const cron = buildCronExpression(frequency, hour, minute, dayOfWeek, dayOfMonth)
-  const schedulePreview = cronToDescription(cron)
+  const schedulePreview = cronToDescription(cron, timezone)
 
   function addRecipient(raw: string) {
     const emails = raw.split(/[,;\s]+/).map((e) => e.trim()).filter(Boolean)
@@ -88,8 +104,8 @@ export function CreateJobForm({ initialJob }: { initialJob?: InitialJob }) {
       const url    = isEditing ? `/api/queries/${initialJob!.id}` : "/api/queries"
       const method = isEditing ? "PATCH" : "POST"
       const body   = isEditing
-        ? { name, sql_query: sql, cron_expression: cron, recipients }
-        : { name, connection_id: connectionId, sql_query: sql, cron_expression: cron, recipients }
+        ? { name, sql_query: sql, cron_expression: cron, timezone, recipients }
+        : { name, connection_id: connectionId, sql_query: sql, cron_expression: cron, timezone, recipients }
 
       const res = await fetch(url, {
         method,
@@ -223,6 +239,22 @@ export function CreateJobForm({ initialJob }: { initialJob?: InitialJob }) {
               </SelectContent>
             </Select>
           </div>
+        </div>
+
+        {/* Timezone */}
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="timezone" className="text-xs text-muted-foreground">Timezone</Label>
+          <input
+            id="timezone"
+            list="tz-list"
+            value={timezone}
+            onChange={(e) => setTimezone(e.target.value)}
+            className="flex h-9 w-full rounded-md border border-input bg-white/5 px-3 py-1 text-xs shadow-sm outline-none placeholder:text-muted-foreground/50 focus-visible:ring-1 focus-visible:ring-ring"
+            placeholder="e.g. Asia/Kolkata"
+          />
+          <datalist id="tz-list">
+            {TIMEZONES.map((tz) => <option key={tz} value={tz} />)}
+          </datalist>
         </div>
       </div>
 
