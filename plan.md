@@ -142,23 +142,18 @@ External DBs
 
 ---
 
-### Phase 3 — Connection Manager (Days 3–4)
+### ~~Phase 3 — Connection Manager~~ ✅ Done
 
-**API routes:**
-- `POST /api/connections` — create, encrypt credentials with AES-256-GCM
-- `GET /api/connections` — list for user
-- `DELETE /api/connections/:id`
-- `POST /api/connections/:id/test` — test live connection (returns success/error)
-
-**UI:**
-- Connection list page with status badges
-- "New Connection" modal: shadcn `Dialog` with form (`Input`, `Select` for db type, `Button`)
-- Test connection button with live feedback (`toast` on success/error)
-
-**Security:**
-- Credentials encrypted with `AES-256-GCM` before write
-- Decrypted only inside server-side API routes, never sent to client
-- Connections marked as `read_only: true` enforced at query execution
+- [x] `app/api/connections/route.ts` — GET (list, safe fields only) + POST (encrypt creds, insert)
+- [x] `app/api/connections/[id]/route.ts` — DELETE with ownership check
+- [x] `app/api/connections/[id]/test/route.ts` — decrypts creds, opens real DB connection, runs SELECT 1
+- [x] `lib/db-connector.ts` — pg + mysql2 connection factory, 5s timeout, SSL
+- [x] `components/dashboard/add-connection-dialog.tsx` — Dialog form, port auto-fills by DB type
+- [x] `components/dashboard/connection-list.tsx` — fetches list, empty state, delete with confirm
+- [x] `components/dashboard/test-connection-btn.tsx` — live test with Connected/Failed badge
+- [x] `app/dashboard/connections/page.tsx` — wired to ConnectionList component
+- [x] shadcn components installed: Dialog, Select, Label, Sonner
+- [x] Sonner Toaster added to root layout
 
 ---
 

@@ -3,7 +3,8 @@
     "allow": [
       "Bash(npm install:*)",
       "Bash(npm run:*)",
-      "Bash(npx shadcn@latest add sheet avatar dropdown-menu tooltip --yes)"
+      "Bash(npx shadcn@latest add sheet avatar dropdown-menu tooltip --yes)",
+      "Bash(npx shadcn@latest add dialog select label sonner --yes)"
     ]
   }
 }
