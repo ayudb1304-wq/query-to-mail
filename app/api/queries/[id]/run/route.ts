@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server"
 import { createServerSupabaseClient } from "@/lib/supabase/server"
+import { executeJob } from "@/lib/executor"
 
-// Stub — real execution wired in Phase 5
+export const maxDuration = 60
+
 export async function POST(
   _request: Request,
   { params }: { params: Promise<{ id: string }> },
@@ -12,6 +14,7 @@ export async function POST(
 
   const { id } = await params
 
+  // Verify ownership before executing
   const { data: job } = await supabase
     .from("query_jobs")
     .select("id")
@@ -20,5 +23,11 @@ export async function POST(
     .single()
   if (!job) return NextResponse.json({ error: "Not found." }, { status: 404 })
 
-  return NextResponse.json({ message: "Execution queued." }, { status: 202 })
+  try {
+    await executeJob(id)
+    return NextResponse.json({ message: "Job executed successfully." })
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err)
+    return NextResponse.json({ error: message }, { status: 500 })
+  }
 }

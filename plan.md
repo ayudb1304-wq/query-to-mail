@@ -180,7 +180,7 @@ External DBs
 
 ---
 
-### Phase 5 — Execution Engine (Days 5–7) ⚠️ Critical
+### ~~Phase 5 — Execution Engine~~ ✅ Done
 
 **This is the core of the product. Must be streaming, not in-memory.**
 
@@ -209,7 +209,7 @@ External DBs
 
 ---
 
-### Phase 6 — Email Delivery (Day 7)
+### ~~Phase 6 — Email Delivery~~ ✅ Done
 
 **Resend integration (`lib/mailer.ts`):**
 
@@ -234,7 +234,7 @@ Body: "Your report is ready. Due to its size, download it here:
 
 ---
 
-### Phase 7 — Large Payload Fallback (Day 7–8)
+### ~~Phase 7 — Large Payload Fallback~~ ✅ Done
 
 - Supabase Storage bucket: `reports` (private bucket)
 - Upload path: `{user_id}/{job_id}/{timestamp}.xlsx`
