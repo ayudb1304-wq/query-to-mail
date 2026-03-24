@@ -1,0 +1,19 @@
+name: cron-trigger
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch: # allows manual trigger from GitHub Actions UI for debugging
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Trigger cron endpoint
+        run: |
+          response=$(curl --silent --show-error --fail \
+            --max-time 30 \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "${{ secrets.APP_URL }}/api/cron")
+          echo "$response"
