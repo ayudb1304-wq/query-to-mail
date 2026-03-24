@@ -1,5 +1,37 @@
+"use client"
+
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
+
+function ScrollLink({
+  href,
+  children,
+  className,
+}: {
+  href: string
+  children: React.ReactNode
+  className?: string
+}) {
+  const router = useRouter()
+
+  function handleClick(e: React.MouseEvent<HTMLAnchorElement>) {
+    e.preventDefault()
+    const id = href.replace("#", "")
+    const el = document.getElementById(id)
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" })
+    } else {
+      router.push(href)
+    }
+  }
+
+  return (
+    <a href={href} onClick={handleClick} className={className}>
+      {children}
+    </a>
+  )
+}
 
 export function Navbar() {
   return (
@@ -9,20 +41,20 @@ export function Navbar() {
           Query<span className="text-primary">2</span>Mail
         </Link>
         <nav className="flex items-center gap-6">
-          <Link
+          <ScrollLink
             href="#how-it-works"
-            className="hidden text-xs text-muted-foreground transition-colors hover:text-foreground sm:block"
+            className="hidden cursor-pointer text-xs text-muted-foreground transition-colors hover:text-foreground sm:block"
           >
             How it works
-          </Link>
-          <Link
+          </ScrollLink>
+          <ScrollLink
             href="#pricing"
-            className="hidden text-xs text-muted-foreground transition-colors hover:text-foreground sm:block"
+            className="hidden cursor-pointer text-xs text-muted-foreground transition-colors hover:text-foreground sm:block"
           >
             Pricing
-          </Link>
+          </ScrollLink>
           <Button size="sm" asChild>
-            <Link href="#waitlist">Get early access</Link>
+            <Link href="/login">Start automating →</Link>
           </Button>
         </nav>
       </div>

@@ -1,7 +1,42 @@
+"use client"
+
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Zap } from "lucide-react"
+
+function EarlyAccessStrip() {
+  const [remaining, setRemaining] = useState<number | null>(null)
+
+  useEffect(() => {
+    fetch("/api/waitlist/count")
+      .then((r) => r.json())
+      .then((d) => setRemaining(d.remaining ?? null))
+      .catch(() => {})
+  }, [])
+
+  // Don't render until we know the count, avoids flicker with wrong number
+  if (remaining === null) return null
+
+  return (
+    <a
+      href="#early-access"
+      onClick={(e) => {
+        e.preventDefault()
+        document.getElementById("early-access")?.scrollIntoView({ behavior: "smooth" })
+      }}
+      className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-xs text-primary transition-colors hover:bg-primary/15"
+    >
+      <Zap className="h-3 w-3 shrink-0" />
+      <span>
+        <strong>{remaining} early adopter spot{remaining !== 1 ? "s" : ""} left</strong>
+        {" — "}lock in 2 months free + discounted pricing forever
+      </span>
+      <span className="text-primary/60">↓</span>
+    </a>
+  )
+}
 
 export function Hero() {
   return (
@@ -56,7 +91,15 @@ export function Hero() {
               </Link>
             </Button>
             <Button size="lg" variant="ghost" asChild>
-              <Link href="#how-it-works">See how it works</Link>
+              <a
+                href="#how-it-works"
+                onClick={(e) => {
+                  e.preventDefault()
+                  document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" })
+                }}
+              >
+                See how it works
+              </a>
             </Button>
           </div>
           <p className="text-xs text-muted-foreground/60">
@@ -64,17 +107,7 @@ export function Hero() {
           </p>
         </div>
 
-        {/* Early adopter urgency strip */}
-        <Link
-          href="#early-access"
-          className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-xs text-primary transition-colors hover:bg-primary/15"
-        >
-          <Zap className="h-3 w-3 shrink-0" />
-          <span>
-            <strong>14 early adopter spots left</strong> — lock in 2 months free + discounted pricing forever
-          </span>
-          <span className="text-primary/60">↓</span>
-        </Link>
+        <EarlyAccessStrip />
       </div>
 
       {/* Bottom fade */}
