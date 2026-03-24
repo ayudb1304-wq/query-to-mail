@@ -1,5 +1,13 @@
 # Query2Mail — MVP Build Plan
 
+## ⚠️ Pre-Launch Removal Checklist
+
+Things added temporarily for development that **must be removed before public launch:**
+
+- [ ] **Dev login bypass** — delete `app/api/dev-login/route.ts` and remove the `DEV_BYPASS_EMAIL` block in `components/auth/login-form.tsx`. Replace with proper Supabase magic link (configure Site URL + redirect URLs in Supabase dashboard, add custom SMTP if needed).
+
+---
+
 ## Stack Decision
 
 | Layer | Choice | Reason |

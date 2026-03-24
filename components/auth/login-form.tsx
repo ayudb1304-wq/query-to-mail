@@ -5,6 +5,9 @@ import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
+// ⚠️ DEV BYPASS — REMOVE BEFORE PUBLIC LAUNCH (see plan.md)
+const DEV_BYPASS_EMAIL = "ayucorp1304@gmail.com"
+
 export function LoginForm() {
   const [email, setEmail] = useState("")
   const [state, setState] = useState<"idle" | "loading" | "sent" | "error">("idle")
@@ -14,6 +17,28 @@ export function LoginForm() {
     e.preventDefault()
     setState("loading")
     setErrorMsg("")
+
+    // ⚠️ DEV BYPASS — generate link server-side, redirect directly, no email sent
+    if (email === DEV_BYPASS_EMAIL) {
+      try {
+        const res = await fetch("/api/dev-login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, origin: window.location.origin }),
+        })
+        const data = await res.json()
+        if (res.ok && data.url) {
+          window.location.href = data.url
+          return
+        }
+        setErrorMsg(data.error ?? "Dev login failed.")
+        setState("error")
+      } catch {
+        setErrorMsg("Dev login failed.")
+        setState("error")
+      }
+      return
+    }
 
     const supabase = createClient()
     const { error } = await supabase.auth.signInWithOtp({
@@ -78,7 +103,7 @@ export function LoginForm() {
       )}
 
       <Button type="submit" disabled={state === "loading"} className="w-full">
-        {state === "loading" ? "Sending…" : "Send magic link"}
+        {state === "loading" ? "Signing in…" : "Send magic link"}
       </Button>
 
       <p className="text-center text-xs text-muted-foreground/60">
