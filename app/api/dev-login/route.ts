@@ -1,6 +1,6 @@
 // ⚠️ DEV BYPASS — REMOVE BEFORE PUBLIC LAUNCH
-// This route generates a magic link server-side and returns it directly,
-// bypassing email delivery. Only works for the hardcoded dev email.
+// Generates an OTP server-side and returns it to the client for direct
+// verification, bypassing email delivery and redirect URL allowlists.
 // See plan.md for the removal checklist item.
 
 import { NextResponse } from "next/server"
@@ -9,7 +9,7 @@ import { createServiceClient } from "@/lib/supabase/server"
 const DEV_EMAIL = "ayucorp1304@gmail.com"
 
 export async function POST(request: Request) {
-  const { email, origin } = await request.json()
+  const { email } = await request.json()
 
   if (email !== DEV_EMAIL) {
     return NextResponse.json({ error: "Not permitted." }, { status: 403 })
@@ -20,17 +20,14 @@ export async function POST(request: Request) {
   const { data, error } = await supabase.auth.admin.generateLink({
     type: "magiclink",
     email: DEV_EMAIL,
-    options: {
-      redirectTo: `${origin}/auth/callback`,
-    },
   })
 
-  if (error || !data.properties?.action_link) {
+  if (error || !data.properties?.email_otp) {
     return NextResponse.json(
-      { error: error?.message ?? "Failed to generate link." },
+      { error: error?.message ?? "Failed to generate OTP." },
       { status: 500 },
     )
   }
 
-  return NextResponse.json({ url: data.properties.action_link })
+  return NextResponse.json({ otp: data.properties.email_otp })
 }

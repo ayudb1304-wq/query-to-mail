@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -9,6 +10,7 @@ import { Input } from "@/components/ui/input"
 const DEV_BYPASS_EMAIL = "ayucorp1304@gmail.com"
 
 export function LoginForm() {
+  const router = useRouter()
   const [email, setEmail] = useState("")
   const [state, setState] = useState<"idle" | "loading" | "sent" | "error">("idle")
   const [errorMsg, setErrorMsg] = useState("")
@@ -18,21 +20,33 @@ export function LoginForm() {
     setState("loading")
     setErrorMsg("")
 
-    // ⚠️ DEV BYPASS — generate link server-side, redirect directly, no email sent
+    // ⚠️ DEV BYPASS — get OTP server-side, verify client-side, no redirect URL needed
     if (email === DEV_BYPASS_EMAIL) {
       try {
         const res = await fetch("/api/dev-login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, origin: window.location.origin }),
+          body: JSON.stringify({ email }),
         })
         const data = await res.json()
-        if (res.ok && data.url) {
-          window.location.href = data.url
+        if (!res.ok) {
+          setErrorMsg(data.error ?? "Dev login failed.")
+          setState("error")
           return
         }
-        setErrorMsg(data.error ?? "Dev login failed.")
-        setState("error")
+        const supabase = createClient()
+        const { error } = await supabase.auth.verifyOtp({
+          email: DEV_BYPASS_EMAIL,
+          token: data.otp,
+          type: "email",
+        })
+        if (error) {
+          setErrorMsg(error.message)
+          setState("error")
+          return
+        }
+        router.push("/dashboard")
+        return
       } catch {
         setErrorMsg("Dev login failed.")
         setState("error")
