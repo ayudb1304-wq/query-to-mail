@@ -43,14 +43,14 @@ export async function GET(request: Request) {
 
   for (const job of jobs) {
     // Atomic claim — only matches if next_run_at is still <= now
-    const { count } = await supabase
+    const { data: claimed } = await supabase
       .from("query_jobs")
       .update({ next_run_at: claimUntil })
       .eq("id", job.id)
       .lte("next_run_at", now.toISOString())
-      .select("id", { count: "exact", head: true })
+      .select("id")
 
-    if (!count || count === 0) {
+    if (!claimed || claimed.length === 0) {
       console.log(`[cron] Job ${job.id} already claimed, skipping.`)
       continue
     }
