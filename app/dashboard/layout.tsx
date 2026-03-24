@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation"
-import { createServerSupabaseClient } from "@/lib/supabase"
+import { createServerSupabaseClient } from "@/lib/supabase/server"
 import { Sidebar } from "@/components/dashboard/sidebar"
 import { MobileNav } from "@/components/dashboard/mobile-nav"
 

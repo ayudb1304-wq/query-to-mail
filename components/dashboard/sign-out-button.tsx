@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation"
 import { LogOut } from "lucide-react"
-import { createClient } from "@/lib/supabase"
+import { createClient } from "@/lib/supabase/client"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 
 export function SignOutButton() {

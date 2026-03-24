@@ -1,4 +1,4 @@
-import { createServerSupabaseClient } from "@/lib/supabase"
+import { createServerSupabaseClient } from "@/lib/supabase/server"
 import { Card, CardContent } from "@/components/ui/card"
 import { CalendarClock, Mail, Activity } from "lucide-react"
 

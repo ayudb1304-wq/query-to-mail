@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { z } from "zod"
-import { createServiceClient } from "@/lib/supabase"
+import { createServiceClient } from "@/lib/supabase/server"
 
 const schema = z.object({
   email: z.string().email("Please enter a valid email address."),
