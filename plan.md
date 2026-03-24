@@ -124,13 +124,21 @@ External DBs
 
 ---
 
-### Phase 2 — Auth & Dashboard Shell (Day 2)
+### ~~Phase 2 — Auth & Dashboard Shell~~ ✅ Done
 
-- Supabase Auth integration (magic link email)
-- Protected `/dashboard` route via Next.js middleware
-- Dashboard layout: sidebar nav (shadcn `Sheet` on mobile)
-- Nav items: Connections, Query Jobs, Logs, Settings
-- Empty states for each section with clear CTAs
+- [x] `app/login/page.tsx` — magic link sign-in page (dark, grid bg)
+- [x] `components/auth/login-form.tsx` — client form, signInWithOtp, "check your inbox" state
+- [x] `app/auth/callback/route.ts` — exchanges Supabase code for session, redirects to `/dashboard`
+- [x] `app/dashboard/layout.tsx` — server layout, reads user session, redirects if unauthenticated
+- [x] `components/dashboard/sidebar.tsx` — desktop sidebar, active nav state, user + sign out
+- [x] `components/dashboard/mobile-nav.tsx` — Sheet drawer on mobile, hamburger trigger
+- [x] `components/dashboard/sign-out-button.tsx` — client, calls signOut + router.push
+- [x] `app/dashboard/page.tsx` — overview with 3 stat cards + empty state pipeline prompt
+- [x] `app/dashboard/connections/page.tsx` — empty state, disabled "Add connection" CTA
+- [x] `app/dashboard/jobs/page.tsx` — empty state, disabled "Create job" CTA
+- [x] `app/dashboard/logs/page.tsx` — empty state
+- [x] shadcn components installed: Sheet, Avatar, DropdownMenu, Tooltip
+- [x] TooltipProvider added to root layout
 
 ---
 
