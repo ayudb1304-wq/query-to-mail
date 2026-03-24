@@ -17,12 +17,12 @@ type BrandLogoProps = {
 }
 
 export function BrandLogo({ className, priority, imgClassName, onNavigate }: BrandLogoProps) {
-  const h = 32
+  const h = 20
   const w = Math.round(h * LOGO_ASPECT)
   return (
     <Link
       href="/"
-      className={cn("inline-flex shrink-0 items-center", className)}
+      className={cn("inline-flex shrink-0 items-center gap-2", className)}
       aria-label="Query2Mail home"
       onClick={onNavigate}
     >
@@ -31,10 +31,13 @@ export function BrandLogo({ className, priority, imgClassName, onNavigate }: Bra
         alt=""
         width={w}
         height={h}
-        className={cn("h-8 w-auto rounded-md", imgClassName)}
+        className={cn("h-5 w-auto rounded-md", imgClassName)}
         priority={priority}
-        sizes="120px"
+        sizes="80px"
       />
+      <span className="font-heading text-sm font-medium tracking-tight text-foreground">
+        Query<span className="text-primary">2</span>Mail
+      </span>
     </Link>
   )
 }

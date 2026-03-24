@@ -32,7 +32,7 @@ export function FooterCta() {
       <Separator className="opacity-5" />
 
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-6 py-6 sm:flex-row">
-        <BrandLogo imgClassName="h-7 w-auto rounded-md" />
+        <BrandLogo />
         <div className="flex items-center gap-4">
           <Link href="/privacy" className="text-xs text-muted-foreground/40 hover:text-muted-foreground transition-colors">
             Privacy

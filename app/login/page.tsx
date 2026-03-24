@@ -23,7 +23,7 @@ export default function LoginPage() {
       <div className="relative w-full max-w-sm">
         {/* Logo */}
         <div className="mb-8 flex flex-col items-center text-center">
-          <BrandLogo imgClassName="h-10 w-auto rounded-md" />
+          <BrandLogo imgClassName="h-6 w-auto rounded-md" />
           <p className="mt-3 text-lg font-medium tracking-tight text-foreground">
             Sign in to your account
           </p>
