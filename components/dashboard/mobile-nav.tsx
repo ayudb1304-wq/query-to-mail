@@ -4,7 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import type { User } from "@supabase/supabase-js"
-import { Menu, LayoutDashboard, Database, CalendarClock, ScrollText } from "lucide-react"
+import { Menu, LayoutDashboard, Database, CalendarClock, ScrollText, Settings } from "lucide-react"
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -16,6 +16,7 @@ const navItems = [
   { label: "Connections", href: "/dashboard/connections", icon: Database, exact: false },
   { label: "Jobs", href: "/dashboard/jobs", icon: CalendarClock, exact: false },
   { label: "Logs", href: "/dashboard/logs", icon: ScrollText, exact: false },
+  { label: "Settings", href: "/dashboard/settings", icon: Settings, exact: false },
 ]
 
 const pageTitles: Record<string, string> = {
@@ -23,6 +24,7 @@ const pageTitles: Record<string, string> = {
   "/dashboard/connections": "Connections",
   "/dashboard/jobs": "Jobs",
   "/dashboard/logs": "Logs",
+  "/dashboard/settings": "Settings",
 }
 
 function getInitials(email: string) {

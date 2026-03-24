@@ -8,6 +8,7 @@ import {
   Database,
   CalendarClock,
   ScrollText,
+  Settings,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
@@ -19,6 +20,7 @@ const navItems = [
   { label: "Connections", href: "/dashboard/connections", icon: Database, exact: false },
   { label: "Jobs", href: "/dashboard/jobs", icon: CalendarClock, exact: false },
   { label: "Logs", href: "/dashboard/logs", icon: ScrollText, exact: false },
+  { label: "Settings", href: "/dashboard/settings", icon: Settings, exact: false },
 ]
 
 function getInitials(email: string) {
