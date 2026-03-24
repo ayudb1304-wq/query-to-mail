@@ -28,7 +28,7 @@ function FieldHelp({ children }: { children: React.ReactNode }) {
         <HelpCircle className="h-3 w-3 cursor-help text-muted-foreground/40 hover:text-muted-foreground/70" />
       </TooltipTrigger>
       <TooltipContent side="right" className="max-w-60 text-xs leading-relaxed">
-        {children}
+        <p>{children}</p>
       </TooltipContent>
     </Tooltip>
   )
