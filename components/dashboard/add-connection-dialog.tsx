@@ -2,12 +2,13 @@
 
 import { useState } from "react"
 import { toast } from "sonner"
-import { Plus } from "lucide-react"
+import { Plus, HelpCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 
 type DbType = "postgres" | "mysql"
 
@@ -18,6 +19,19 @@ const DEFAULT_PORTS: Record<DbType, number> = {
 
 interface Props {
   onCreated: () => void
+}
+
+function FieldHelp({ children }: { children: React.ReactNode }) {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <HelpCircle className="h-3 w-3 cursor-help text-muted-foreground/40 hover:text-muted-foreground/70" />
+      </TooltipTrigger>
+      <TooltipContent side="right" className="max-w-60 text-xs leading-relaxed">
+        {children}
+      </TooltipContent>
+    </Tooltip>
+  )
 }
 
 export function AddConnectionDialog({ onCreated }: Props) {
@@ -122,10 +136,18 @@ export function AddConnectionDialog({ onCreated }: Props) {
           {/* Host + Port */}
           <div className="grid grid-cols-3 gap-3">
             <div className="col-span-2 flex flex-col gap-1.5">
-              <Label htmlFor="host" className="text-xs text-muted-foreground">Host</Label>
+              <div className="flex items-center gap-1">
+                <Label htmlFor="host" className="text-xs text-muted-foreground">Host</Label>
+                <FieldHelp>
+                  The server hostname. For Supabase: go to{" "}
+                  <span className="font-medium text-foreground">Settings → Database → Connection string</span>{" "}
+                  and copy the Host value. Looks like{" "}
+                  <span className="font-mono text-primary">db.[ref].supabase.co</span>
+                </FieldHelp>
+              </div>
               <Input
                 id="host"
-                placeholder="db.example.com"
+                placeholder="db.xxxx.supabase.co"
                 value={host}
                 onChange={(e) => setHost(e.target.value)}
                 required
@@ -133,7 +155,15 @@ export function AddConnectionDialog({ onCreated }: Props) {
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="port" className="text-xs text-muted-foreground">Port</Label>
+              <div className="flex items-center gap-1">
+                <Label htmlFor="port" className="text-xs text-muted-foreground">Port</Label>
+                <FieldHelp>
+                  PostgreSQL default: <span className="font-mono text-primary">5432</span>. MySQL default:{" "}
+                  <span className="font-mono text-primary">3306</span>. For Supabase, use{" "}
+                  <span className="font-mono text-primary">5432</span> for a direct connection or{" "}
+                  <span className="font-mono text-primary">6543</span> for the connection pooler (PgBouncer).
+                </FieldHelp>
+              </div>
               <Input
                 id="port"
                 type="number"
@@ -147,10 +177,17 @@ export function AddConnectionDialog({ onCreated }: Props) {
 
           {/* Database name */}
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="database_name" className="text-xs text-muted-foreground">Database name</Label>
+            <div className="flex items-center gap-1">
+              <Label htmlFor="database_name" className="text-xs text-muted-foreground">Database name</Label>
+              <FieldHelp>
+                The name of the database to connect to. For Supabase this is always{" "}
+                <span className="font-mono text-primary">postgres</span>. For other hosted providers,
+                check your dashboard or connection string.
+              </FieldHelp>
+            </div>
             <Input
               id="database_name"
-              placeholder="my_database"
+              placeholder="postgres"
               value={databaseName}
               onChange={(e) => setDatabaseName(e.target.value)}
               required
@@ -161,10 +198,18 @@ export function AddConnectionDialog({ onCreated }: Props) {
           {/* Username + Password */}
           <div className="grid grid-cols-2 gap-3">
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="username" className="text-xs text-muted-foreground">Username</Label>
+              <div className="flex items-center gap-1">
+                <Label htmlFor="username" className="text-xs text-muted-foreground">Username</Label>
+                <FieldHelp>
+                  The database user. For Supabase: go to{" "}
+                  <span className="font-medium text-foreground">Settings → Database</span> — the default
+                  user is <span className="font-mono text-primary">postgres</span>. Use a read-only user
+                  if you have one.
+                </FieldHelp>
+              </div>
               <Input
                 id="username"
-                placeholder="readonly_user"
+                placeholder="postgres"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
@@ -172,7 +217,14 @@ export function AddConnectionDialog({ onCreated }: Props) {
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="password" className="text-xs text-muted-foreground">Password</Label>
+              <div className="flex items-center gap-1">
+                <Label htmlFor="password" className="text-xs text-muted-foreground">Password</Label>
+                <FieldHelp>
+                  For Supabase: go to{" "}
+                  <span className="font-medium text-foreground">Settings → Database → Database password</span>.
+                  This is your DB password — not your anon key or service role key.
+                </FieldHelp>
+              </div>
               <Input
                 id="password"
                 type="password"

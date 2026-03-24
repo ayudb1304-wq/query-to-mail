@@ -5,6 +5,7 @@
 Things added temporarily for development that **must be removed before public launch:**
 
 - [ ] **Dev login bypass** — delete `app/api/dev-login/route.ts` and remove the `DEV_BYPASS_EMAIL` block in `components/auth/login-form.tsx`. Replace with proper Supabase magic link (configure Site URL + redirect URLs in Supabase dashboard, add custom SMTP if needed).
+- [ ] **Demo seed data** — drop the demo schema before prod launch. Run in Supabase SQL editor: `DROP SCHEMA demo CASCADE;` and delete `supabase/migrations/003_demo_schema_and_seed.sql`.
 
 ---
 
