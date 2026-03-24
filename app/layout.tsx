@@ -1,8 +1,15 @@
+import type { Metadata } from "next"
 import { Geist, Geist_Mono, JetBrains_Mono } from "next/font/google"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils"
+
+export const metadata: Metadata = {
+  title: "Query2Mail — SQL to Excel, automatically",
+  description:
+    "Run your SQL on a schedule and deliver perfectly formatted Excel reports to any inbox. No BI platform. No dashboards. No logins.",
+}
 
 const geistMonoHeading = Geist_Mono({subsets:['latin'],variable:'--font-heading'});
 

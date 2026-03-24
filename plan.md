@@ -91,52 +91,36 @@ External DBs
 
 ## Phase Plan
 
-### Phase 0 — Project Setup (Day 1)
-- [ ] Init Next.js 14 app with TypeScript, Tailwind, shadcn/ui
-- [ ] Configure Supabase project: create tables, enable Row Level Security
-- [ ] Set up Supabase Auth (magic link or GitHub OAuth)
-- [ ] Configure environment variables: `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_KEY`, `RESEND_API_KEY`, `ENCRYPTION_KEY`
-- [ ] Set up Vercel project, link to GitHub repo
-- [ ] Configure `vercel.json` with cron job: `GET /api/cron` every minute
+### ~~Phase 0 — Project Setup~~ ✅ Done
+- [x] Init Next.js 14 app with TypeScript, Tailwind, shadcn/ui
+- [x] Configure Supabase project: create tables, enable Row Level Security (`supabase/migrations/`)
+- [x] Set up Supabase Auth (magic link — configured in middleware)
+- [x] Configure environment variables: `.env.example` created, `.env.local` filled by user
+- [x] Set up Vercel project, link to GitHub repo
+- [x] Configure `vercel.json` with cron job: `GET /api/cron` every minute
+- [x] Install backend packages: Supabase SSR, Resend, ExcelJS, pg, mysql2, zod
+- [x] `lib/supabase.ts` — browser, server, service role clients
+- [x] `lib/crypto.ts` — AES-256-GCM encrypt/decrypt
+- [x] `middleware.ts` — auth route protection
 
 ---
 
-### Phase 1 — Landing Page (Days 1–2)
+### ~~Phase 1 — Landing Page~~ ✅ Done
 
 **Goal:** Sell the *pain*, not the product. Dark, dramatic, premium.
 
-**Page structure (single scrolling page):**
-
-#### Section 1 — Hero
-- Headline (emotional, not feature-driven):
-  > "Your stakeholders don't need a dashboard. They need the answer in their inbox."
-- Sub-headline:
-  > "Query2Mail runs your SQL on a schedule and delivers perfectly formatted Excel reports — automatically. No login required for recipients. No BI platform. No meetings about the dashboard."
-- CTA: `Get Early Access` → email capture form (saves to Supabase `waitlist` table)
-- Background: dark (`zinc-950`), subtle grid or noise texture
-
-#### Section 2 — Problem (The Pain)
-- Emotional copy targeting the data engineer:
-  > "You've written the Python script. You've set up the cron job. You've handled the SMTP config. You've fixed the broken pandas export at 7am on a Monday. Again."
-- Three pain cards: **The BI Platform Nobody Uses**, **The Fragile Script**, **The Friday Inbox Panic**
-
-#### Section 3 — How It Works (3 steps, no jargon)
-1. Connect your database (read-only)
-2. Write your query, set a schedule
-3. Your stakeholders get an Excel file in their inbox
-
-#### Section 4 — Social Proof / Positioning
-- "Built for data engineers who are tired of being accidental BI developers."
-- Pull quote style testimonial placeholder
-
-#### Section 5 — Pricing (simple)
-- Two cards: `Starter $29/mo` and `Pro $79/mo`
-- Feature comparison table (minimal)
-
-#### Section 6 — CTA Footer
-- Repeat headline + email capture
-
-**Components to use (shadcn):** `Button`, `Card`, `Input`, `Badge`, `Separator`
+- [x] `components/landing/navbar.tsx` — fixed top nav with smooth scroll links
+- [x] `components/landing/hero.tsx` — grid bg, radial glow, headline, email capture
+- [x] `components/landing/waitlist-form.tsx` — client component, POST to `/api/waitlist`
+- [x] `components/landing/pain-section.tsx` — three pain cards (BI nobody uses, fragile script, Friday panic)
+- [x] `components/landing/how-it-works.tsx` — 3 steps + inline SQL code visual
+- [x] `components/landing/pricing.tsx` — Starter $29 / Pro $79 cards
+- [x] `components/landing/footer-cta.tsx` — repeat CTA + footer
+- [x] `app/api/waitlist/route.ts` — POST endpoint, validates email, inserts to Supabase, handles duplicates
+- [x] `app/page.tsx` — wires all sections together
+- [x] `app/layout.tsx` — updated metadata (title, description)
+- [x] `components/theme-provider.tsx` — default theme set to dark
+- [x] shadcn components installed: Card, Input, Badge, Separator
 
 ---
 
