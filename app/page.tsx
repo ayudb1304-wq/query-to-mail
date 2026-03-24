@@ -3,6 +3,7 @@ import { Hero } from "@/components/landing/hero"
 import { PainSection } from "@/components/landing/pain-section"
 import { HowItWorks } from "@/components/landing/how-it-works"
 import { Pricing } from "@/components/landing/pricing"
+import { EarlyAdopter } from "@/components/landing/early-adopter"
 import { FooterCta } from "@/components/landing/footer-cta"
 
 export default function Page() {
@@ -14,6 +15,7 @@ export default function Page() {
         <PainSection />
         <HowItWorks />
         <Pricing />
+        <EarlyAdopter />
         <FooterCta />
       </main>
     </div>

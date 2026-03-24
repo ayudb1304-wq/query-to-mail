@@ -37,9 +37,8 @@ export default function LoginPage() {
         </div>
 
         <p className="mt-6 text-center text-xs text-muted-foreground/60">
-          Don&apos;t have an account?{" "}
-          <Link href="/#waitlist" className="text-muted-foreground underline underline-offset-4 hover:text-foreground">
-            Join the waitlist
+          <Link href="/" className="text-muted-foreground underline underline-offset-4 hover:text-foreground">
+            ← Back to home
           </Link>
         </p>
       </div>

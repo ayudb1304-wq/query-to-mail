@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Zap } from "lucide-react"
 
 export function Hero() {
   return (
@@ -47,18 +48,33 @@ export function Hero() {
           No login required for recipients.
         </p>
 
-        <div className="flex items-center gap-3">
-          <Button size="lg" asChild>
-            <Link href="/login">Get started free</Link>
-          </Button>
-          <Button size="lg" variant="ghost" asChild>
-            <Link href="#how-it-works">See how it works</Link>
-          </Button>
+        <div className="flex flex-col items-center gap-4">
+          <div className="flex items-center gap-3">
+            <Button size="lg" asChild className="gap-2">
+              <Link href="/login">
+                Send your first report in 5 min →
+              </Link>
+            </Button>
+            <Button size="lg" variant="ghost" asChild>
+              <Link href="#how-it-works">See how it works</Link>
+            </Button>
+          </div>
+          <p className="text-xs text-muted-foreground/60">
+            No credit card required. Sign in with just your email.
+          </p>
         </div>
 
-        <p className="text-xs text-muted-foreground/60">
-          Sign in with your email. No password needed.
-        </p>
+        {/* Early adopter urgency strip */}
+        <Link
+          href="#early-access"
+          className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-xs text-primary transition-colors hover:bg-primary/15"
+        >
+          <Zap className="h-3 w-3 shrink-0" />
+          <span>
+            <strong>14 early adopter spots left</strong> — lock in 2 months free + discounted pricing forever
+          </span>
+          <span className="text-primary/60">↓</span>
+        </Link>
       </div>
 
       {/* Bottom fade */}
